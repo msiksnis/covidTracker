@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FormControl, Select, MenuItem } from "@material-ui/core";
 import "./App.css";
 import InfoBox from "./components/InfoBox";
+import Map from "./components/Map";
 
 function App() {
   const [countries, setCountries] = useState([]);
@@ -56,6 +57,7 @@ function App() {
       {/* Graph */}
 
       {/* Map */}
+      <Map></Map>
     </div>
   );
 }
