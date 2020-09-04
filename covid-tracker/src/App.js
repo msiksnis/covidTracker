@@ -1,23 +1,30 @@
 import React, { useState, useEffect } from "react";
+import "./App.css";
 import {
+  MenuItem,
   FormControl,
   Select,
-  MenuItem,
   Card,
   CardContent,
 } from "@material-ui/core";
-import "./App.css";
 import InfoBox from "./components/InfoBox";
-import Map from "./components/Map";
+import LineGraph from "./components/LineGraph";
 import Table from "./components/table/Table";
 import { sortData } from "./utils";
-import LineGraph from "./components/LineGraph";
+import Map from "./components/map/Map";
+import "leaflet/dist/leaflet.css";
 
-function App() {
+const App = () => {
   const [countries, setCountries] = useState([]);
   const [country, setCountry] = useState("worldwide");
   const [countryInfo, setCountryInfo] = useState({});
   const [tableData, setTableData] = useState([]);
+  const [mapCenter, setMapCenter] = useState({
+    lat: 34.80746,
+    lng: -40.4976,
+  });
+  const [mapZoom, setMapZoom] = useState(3);
+  const [mapCountries, setMapCountries] = useState([]);
 
   useEffect(() => {
     fetch("https://disease.sh/v3/covid-19/all")
@@ -39,6 +46,7 @@ function App() {
 
           const sortedData = sortData(data);
           setTableData(sortedData);
+          setMapCountries(data);
           setCountries(countries);
         });
     };
@@ -58,7 +66,11 @@ function App() {
     await fetch(url)
       .then((response) => response.json())
       .then((data) => {
+        setCountry(countryCode);
         setCountryInfo(data);
+
+        setMapCenter([data.countryInfo.lat, data.countryInfo.long]);
+        setMapZoom(4);
       });
   };
 
@@ -103,8 +115,7 @@ function App() {
             total={countryInfo.deaths}
           />
         </div>
-        {/* Map */}
-        <Map></Map>
+        <Map countries={mapCountries} center={mapCenter} zoom={mapZoom}></Map>
       </div>
       <Card className="app__right">
         <CardContent>
@@ -116,6 +127,6 @@ function App() {
       </Card>
     </div>
   );
-}
+};
 
 export default App;
